@@ -1,0 +1,101 @@
+﻿@model IEnumerable<PeopleSearchApp.Models.Person>
+
+@{
+    ViewBag.Title = "People Search";
+}
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+
+<script type="text/javascript">
+    function validateTxtSearch() {
+        var searchValue = $("#txtSearch").val();
+        if(/^[a-zA-Z'. ]+$/.test(searchValue) || searchValue=="")
+        {
+            search();
+
+        }
+        else {
+            $("#errorMsg").html('  Invalid characters entered! ');
+        }
+    }
+    function search() {
+        var searchValue = $("#txtSearch").val();
+            $.ajax({
+                type: "GET",
+                url: "@(Url.RouteUrl("SearchPeopleByString"))",
+                data: { "searchValue": searchValue },
+                contentType: 'application/json',
+
+                success: function (data) {
+                    var result = "";
+                    if (data == "") {
+                        result += '<br /><font color="red">No records found!</font>';
+                    }
+                    else {
+                        result += '<br /><table class="CSSTable"><tr><th>Image </th><th>First Name</th>'
+                            + '<th> Last Name </th> <th> Address </th>'
+                            + ' <th> Age  </th> <th> Interests  </th> </tr>';
+
+                        $.each(data, function (searchValue, person) {
+                            result += '<tr><td>' +
+                                '<div style="margin: 0 auto; width: 30px"> <img class="img-rounded" src="/Images/' + person.Image + '" width=30 height=30 /> </div>'
+                            + '</td><td>' + person.FirstName + '</td><td>'
+                            + person.LastName + '</td><td>'
+                            + person.Address + ' </td><td>'
+                            + person.Age + '</td><td>'
+                            + person.Interests + '</td></tr>';
+                        });
+                        result += '</table>';
+                    }
+                    $("#errorMsg").html("");
+                    $("#searchResults").html(result);
+                }
+            });
+        }
+</script>
+
+<h2>People Search Application</h2>
+
+<style type="text/css">
+.textBoxCSS{
+  display: inline-block;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  float: left;
+  margin: 0px;
+  margin-right:5px;
+  padding: 10px;
+  border: 1px solid #b7b7b7;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  font: bold 14px/bold "sans-serif";
+  color: rgba(0,142,198,1);
+  background: rgba(247,247,247,1);
+  -webkit-box-shadow: 7px 7px 2px 0 rgba(19,221,208,0.2) ;
+  box-shadow: 4px 4px 2px 0 rgba(19,221,208,0.2) ;
+}
+
+.searchButtonCSS{
+  float: inherit;
+  margin: 0px;
+  padding: 10px;
+}
+
+.erroMsgCSS{
+    color: red;
+}
+</style>
+
+@Html.TextBox("txtSearch", null, new { @class = "textBoxCSS", @placeholder="Search Value..." })
+<div>
+    <input class="btn btn-primary searchButtonCSS" type="button" value="Search" onclick="validateTxtSearch()" />
+    <label class="erroMsgCSS" id="errorMsg"></label>
+</div>
+<br />
+
+<div id="searchResults">
+    @Html.Partial("_SearchResult",Model)
+</div>
+

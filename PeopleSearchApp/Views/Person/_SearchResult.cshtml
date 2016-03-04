@@ -1,0 +1,64 @@
+﻿
+
+@model IEnumerable<PeopleSearchApp.Models.Person>
+
+<link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+
+
+    @if (ViewBag.NoResults == true)
+    {
+        <br />
+        <font color="red">No records found!</font>
+    }
+    else
+    {
+        <br />
+        <table class="CSSTable">
+            <tr>
+                <th>
+                    Image
+                </th>
+                <th>
+                    First Name
+                </th>
+                <th>
+                    Last Name
+                </th>
+                <th>
+                    Address
+                </th>
+                <th>
+                    Age
+                </th>
+                <th>
+                    Interests
+                </th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <div style="margin: 0 auto; width: 30px">
+                            <img class="img-rounded" src="~/Images/@item.Image" width=30 height=30 />
+                            </div>
+                    </td>
+                    <td>
+                        @item.FirstName
+                    </td>
+                    <td>
+                        @item.LastName
+                    </td>
+                    <td>
+                        @item.Address
+                    </td>
+                    <td>
+                        @item.Age
+                    </td>
+                    <td>
+                        @item.Interests
+                    </td>
+                </tr>
+            }
+        </table>
+    }
